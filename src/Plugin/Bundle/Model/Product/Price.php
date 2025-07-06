@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Infrangible\BundleOptionQtyPrice\Plugin\Bundle\Model\Product;
 
-use FeWeDev\Base\Arrays;
-use FeWeDev\Base\Json;
 use FeWeDev\Base\Variables;
+use Infrangible\BundleOptionQtyPrice\Helper\Data;
 use Magento\Catalog\Model\Product;
 use Magento\Framework\Exception\LocalizedException;
 
@@ -20,17 +19,13 @@ class Price
     /** @var Variables */
     protected $variables;
 
-    /** @var Json */
-    protected $json;
+    /** @var Data */
+    protected $helper;
 
-    /** @var Arrays */
-    protected $arrays;
-
-    public function __construct(Variables $variables, Json $json, Arrays $arrays)
+    public function __construct(Variables $variables, Data $helper)
     {
         $this->variables = $variables;
-        $this->json = $json;
-        $this->arrays = $arrays;
+        $this->helper = $helper;
     }
 
     /**
@@ -58,64 +53,36 @@ class Price
                     $productOption = $product->getOptionById($optionId);
 
                     if ($productOption) {
-                        $bundleOptionQtyPrice = $productOption->getData('bundle_option_qty_price');
+                        $productOptionQty = $this->helper->getProductOptionQty(
+                            $product,
+                            $productOption,
+                            $qty
+                        );
 
-                        if ($bundleOptionQtyPrice) {
-                            $buyRequestOption = $product->getCustomOption('info_buyRequest');
+                        if ($productOptionQty != $qty) {
+                            $customOption = $product->getCustomOption(
+                                sprintf(
+                                    'option_%s',
+                                    $productOption->getId()
+                                )
+                            );
 
-                            if ($buyRequestOption) {
-                                $buyRequestOptionValue = $buyRequestOption->getValue();
+                            $group = $productOption->groupFactory($productOption->getType());
 
-                                $buyRequest = $this->json->decode($buyRequestOptionValue);
+                            $group->setOption($productOption);
+                            $group->setData(
+                                'configuration_item_option',
+                                $customOption
+                            );
 
-                                $bundleOptionSelectionId = $this->arrays->getValue(
-                                    $buyRequest,
-                                    sprintf(
-                                        'bundle_option:%s',
-                                        $bundleOptionQtyPrice
-                                    ),
-                                    []
-                                );
+                            $optionPrice = $group->getOptionPrice(
+                                $customOption->getValue(),
+                                $basePrice
+                            );
 
-                                if ($bundleOptionSelectionId) {
-                                    $selectionQtyOption = $product->getCustomOption(
-                                        sprintf(
-                                            'selection_qty_%s',
-                                            $bundleOptionSelectionId
-                                        )
-                                    );
+                            $qtyDiff = $productOptionQty - $qty;
 
-                                    if ($selectionQtyOption) {
-                                        $selectionQty = $selectionQtyOption->getValue();
-
-                                        if ($selectionQty != $qty) {
-                                            $customOption = $product->getCustomOption(
-                                                sprintf(
-                                                    'option_%s',
-                                                    $productOption->getId()
-                                                )
-                                            );
-
-                                            $group = $productOption->groupFactory($productOption->getType());
-
-                                            $group->setOption($productOption);
-                                            $group->setData(
-                                                'configuration_item_option',
-                                                $customOption
-                                            );
-
-                                            $optionPrice = $group->getOptionPrice(
-                                                $customOption->getValue(),
-                                                $basePrice
-                                            );
-
-                                            $qtyDiff = $selectionQty - $qty;
-
-                                            $result += $optionPrice * $qtyDiff;
-                                        }
-                                    }
-                                }
-                            }
+                            $result += $optionPrice * $qtyDiff;
                         }
                     }
                 }
