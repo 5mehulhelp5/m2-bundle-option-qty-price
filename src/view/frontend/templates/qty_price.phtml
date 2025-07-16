@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @author      Andreas Knollmann
+ * @copyright   2014-2025 Softwareentwicklung Andreas Knollmann
+ * @license     http://www.opensource.org/licenses/mit-license.php MIT
+ */
+
+use Infrangible\BundleOptionQtyPrice\Block\QtyPrice;
+use Magento\Framework\View\TemplateEngine\Php;
+
+/** @var Php $this */
+/** @var QtyPrice $block */
+?>
+
+<script type="text/x-magento-init">
+    {
+        "#product_addtocart_form": {
+            "bundleOptionQtyPrice": {
+                "config": <?= /* @noEscape */ $block->getConfig(); ?>
+            }
+        }
+    }
+</script>
