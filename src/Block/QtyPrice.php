@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Infrangible\BundleOptionQtyPrice\Block;
 
-use FeWeDev\Base\Json;
+use Infrangible\BundleOptionQtyPrice\Helper\Data;
 use Infrangible\Core\Helper\Registry;
-use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Model\Product;
-use Magento\Catalog\Model\Product\Option;
 use Magento\Framework\View\Element\Template;
 
 /**
@@ -21,18 +19,22 @@ class QtyPrice extends Template
     /** @var Registry */
     protected $registryHelper;
 
-    /** @var Json */
-    protected $json;
+    /** @var Data */
+    protected $helper;
 
-    public function __construct(Template\Context $context, Registry $registryHelper, Json $json, array $data = [])
-    {
+    public function __construct(
+        Template\Context $context,
+        Registry $registryHelper,
+        Data $helper,
+        array $data = []
+    ) {
         parent::__construct(
             $context,
             $data
         );
 
         $this->registryHelper = $registryHelper;
-        $this->json = $json;
+        $this->helper = $helper;
     }
 
     public function getProduct(): Product
@@ -51,31 +53,6 @@ class QtyPrice extends Template
     {
         $product = $this->getProduct();
 
-        $config = [];
-
-        /** @var Option $productOption */
-        foreach ($product->getOptions() as $productOption) {
-            $bundleOptionId = $productOption->getData('bundle_option_qty_price');
-
-            if ($bundleOptionId) {
-                $productOptionId = $productOption->getId();
-
-                /** @var Type $typeInstance */
-                $typeInstance = $product->getTypeInstance();
-
-                $selectionsCollection = $typeInstance->getSelectionsCollection(
-                    [$bundleOptionId],
-                    $product
-                );
-
-                /** @var Product $selection */
-                foreach ($selectionsCollection as $selection) {
-                    $config[ $productOptionId ][ $bundleOptionId ][ $selection->getId() ] =
-                        $selection->getData('selection_qty');
-                }
-            }
-        }
-
-        return $this->json->encode($config);
+        return $this->helper->getConfig($product);
     }
 }

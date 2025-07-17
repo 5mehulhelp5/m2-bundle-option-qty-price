@@ -6,6 +6,7 @@ namespace Infrangible\BundleOptionQtyPrice\Helper;
 
 use FeWeDev\Base\Arrays;
 use FeWeDev\Base\Json;
+use Magento\Bundle\Model\Product\Type;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Option;
 
@@ -65,5 +66,42 @@ class Data
         }
 
         return $qty;
+    }
+
+    public function getConfig(Product $product): string
+    {
+        $configData = $this->getConfigData($product);
+
+        return $this->json->encode($configData);
+    }
+
+    public function getConfigData(Product $product): array
+    {
+        $config = [];
+
+        /** @var Option $productOption */
+        foreach ($product->getOptions() as $productOption) {
+            $bundleOptionId = $productOption->getData('bundle_option_qty_price');
+
+            if ($bundleOptionId) {
+                $productOptionId = $productOption->getId();
+
+                /** @var Type $typeInstance */
+                $typeInstance = $product->getTypeInstance();
+
+                $selectionsCollection = $typeInstance->getSelectionsCollection(
+                    [$bundleOptionId],
+                    $product
+                );
+
+                /** @var Product $selection */
+                foreach ($selectionsCollection as $selection) {
+                    $config[ $productOptionId ][ $bundleOptionId ][ $selection->getId() ] =
+                        $selection->getData('selection_qty');
+                }
+            }
+        }
+
+        return $config;
     }
 }
