@@ -15,7 +15,8 @@ define([
     var globalOptions = {
         config: {},
         optionsSelector: '.product-custom-option',
-        productBundleTriggerSelector: '.bundle-options-container'
+        productBundleTriggerSelector: '.bundle-options-container',
+        productBundleOptionContainerSelector: null,
     };
 
     $.widget('infrangible.bundleOptionQtyPrice', {
@@ -35,7 +36,9 @@ define([
                         var optionQtyPrice = self.options.config[optionId];
 
                         if (optionQtyPrice) {
-                            var selectedProductIds = selection.collectSelectedProductIds(self.element);
+                            var selectedProductIds = selection.collectSelectedProductIds(
+                                self.options.productBundleOptionContainerSelector ?
+                                    self.options.productBundleOptionContainerSelector : self.element);
 
                             var selectionQty = 0;
 
@@ -53,14 +56,16 @@ define([
                                 });
                             });
 
-                            $.each(optionChanges, function(priceCode, priceData) {
-                                if (priceData.orgAmount) {
-                                    priceData.amount = priceData.orgAmount * selectionQty;
-                                } else if (priceData.amount) {
-                                    priceData.orgAmount = priceData.amount;
-                                    priceData.amount = priceData.amount * selectionQty;
-                                }
-                            });
+                            if (selectionQty > 0) {
+                                $.each(optionChanges, function(priceCode, priceData) {
+                                    if (priceData.orgAmount) {
+                                        priceData.amount = priceData.orgAmount * selectionQty;
+                                    } else if (priceData.amount) {
+                                        priceData.orgAmount = priceData.amount;
+                                        priceData.amount = priceData.amount * selectionQty;
+                                    }
+                                });
+                            }
                         }
                     }
                 });
