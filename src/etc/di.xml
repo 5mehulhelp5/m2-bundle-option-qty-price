@@ -9,4 +9,7 @@
     <type name="Magento\Bundle\Model\Product\Price">
         <plugin name="infrangible_bundleoptionqtyprice" type="Infrangible\BundleOptionQtyPrice\Plugin\Bundle\Model\Product\Price"/>
     </type>
+    <type name="Magento\Catalog\Model\Product\Option\Type\DefaultType">
+        <plugin name="infrangible_bundleoptionqtyprice" type="Infrangible\BundleOptionQtyPrice\Plugin\Catalog\Model\Product\Option\Type\DefaultType"/>
+    </type>
 </config>
