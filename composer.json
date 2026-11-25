@@ -1,11 +1,19 @@
 {
     "name": "infrangible/m2-bundle-option-qty-price",
-    "description": "Infrangible Magento 2 Bundle Option Qty Price",
+    "description": "Multiplies the price of a custom option on a bundle product by the quantity of the item chosen in a linked bundle option, on the product page, in the cart and in the order.",
     "type": "magento2-module",
     "version": "1.5.1",
     "license": "MIT",
     "keywords": [
-        "Magento"
+        "Magento",
+        "Magento 2",
+        "Adobe Commerce",
+        "Bundle products",
+        "Product options",
+        "Pricing",
+        "custom option price per bundle quantity",
+        "bundle option quantity price",
+        "option price multiplied by bundle quantity"
     ],
     "homepage": "https://github.com/infrangible-dev/m2-bundle-option-qty-price",
     "authors": [
