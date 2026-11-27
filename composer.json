@@ -2,7 +2,7 @@
     "name": "infrangible/m2-bundle-option-qty-price",
     "description": "Multiplies the price of a custom option on a bundle product by the quantity of the item chosen in a linked bundle option, on the product page, in the cart and in the order.",
     "type": "magento2-module",
-    "version": "1.5.1",
+    "version": "2.0.0",
     "license": "MIT",
     "keywords": [
         "Magento",
@@ -15,7 +15,7 @@
         "bundle option quantity price",
         "option price multiplied by bundle quantity"
     ],
-    "homepage": "https://github.com/infrangible-dev/m2-bundle-option-qty-price",
+    "homepage": "https://www.infrangible.dev/modules/bundle-option-qty-price",
     "authors": [
         {
             "name": "Andreas Knollmann",
@@ -25,11 +25,18 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "magento/framework": "~102.0.0|~103.0.0",
-        "infrangible/m2-bundle-option-selection": "~1.2.0",
-        "infrangible/m2-catalog-product-option": "~1.3.0",
-        "infrangible/m2-catalog-product-option-wrapper": "~1.2.0"
+        "php": ">=8.1",
+        "fewedev/base": "~2.4.3",
+        "infrangible/m2-bundle-option-selection": "~2.0.1",
+        "infrangible/m2-catalog-product-option": "~2.0.1",
+        "infrangible/m2-core": "~5.0.6",
+        "infrangible/m2-foundation": "~3.0.2",
+        "magento/framework": "~103.0.6",
+        "magento/module-bundle": "~101.0.0",
+        "magento/module-catalog": "~104.0.0",
+        "magento/module-quote": "~101.2.0",
+        "magento/module-sales": "~103.0.0",
+        "magento/module-ui": "~101.2.0"
     },
     "autoload": {
         "files": [
@@ -38,5 +45,8 @@
         "psr-4": {
             "Infrangible\\BundleOptionQtyPrice\\": "src"
         }
+    },
+    "require-dev": {
+        "infrangible/phpstan-magento": "~1.2.0"
     }
 }
